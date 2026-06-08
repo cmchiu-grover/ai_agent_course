@@ -2,10 +2,18 @@
   "name": "ai_agent_course",
   "version": "1.0.0",
   "description": "## 選題",
-  "main": "index.js",
+  "type": "module",
+  "main": "src/main.js",
   "scripts": {
+    "start": "node src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@inquirer/prompts": "^7.10.1",
+    "dotenv": "^17.4.2",
+    "lowdb": "^7.0.1",
+    "openai": "^6.42.0"
+  }
 }
