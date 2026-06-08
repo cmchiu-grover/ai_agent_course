@@ -6,12 +6,16 @@
   "main": "src/main.js",
   "scripts": {
     "start": "node src/main.js",
+    "embed": "node src/scripts/embed-csvfile.js",
+    "agent": "node src/function_call.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@inquirer/prompts": "^7.10.1",
+    "@qdrant/js-client-rest": "^1.18.0",
+    "csv-parse": "^6.2.1",
     "dotenv": "^17.4.2",
     "lowdb": "^7.0.1",
     "openai": "^6.42.0",

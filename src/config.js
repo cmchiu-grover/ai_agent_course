@@ -1,8 +1,6 @@
-import { fileURLToPath } from "url";
-import { dirname, resolve } from "path";
-import dotenv from "dotenv";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: resolve(__dirname, "..", ".env") });
+import "dotenv/config";
 
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+export const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
+export const QDRANT_URL = process.env.QDRANT_URL ?? "http://localhost:6333";
+export const QDRANT_API_KEY = process.env.QDRANT_API_KEY;

@@ -1,40 +1,30 @@
 import { input } from "@inquirer/prompts";
-import OpenAI from "openai";
-import { OPENAI_API_KEY } from "./config.js";
-import { initMessage, addMessage, getMessages } from "./db/messages.js";
-
-const client = new OpenAI({ apiKey: OPENAI_API_KEY });
-
-await initMessage(
-  `你是一位英文單字小老師，專業於多益測驗（TOEIC），幫助解釋單字用法和例句。
-  熟悉台灣學生常見的學習痛點，了解中英文之間的語感差異。
-  語氣親切、鼓勵，像朋友般輕鬆交流。
-  適時加入記憶技巧或有趣聯想，幫助學生記住單字。
-  補充常見搭配詞（collocations）與片語用法
-  `,
-);
+import { searchCity } from "./lib/qdrant.js";
+import { spinner } from "./utils/spinner.js";
 
 try {
   while (true) {
-    const userQuestion = (await input({ message: "請輸入你的問題：" })).trim();
+    const query = (await input({ message: "請輸入要詢問的六都內容：" })).trim();
 
-    if (userQuestion === "") continue;
-    if (userQuestion.toLowerCase() === "exit") {
+    if (query === "") continue;
+    if (query.toLowerCase() === "exit") {
       console.log("再會~");
       break;
     }
 
-    await addMessage(userQuestion);
+    const spin = spinner("搜尋中...").start();
+    const results = await searchCity(query, 3);
+    spin.stop();
 
-    const response = await client.chat.completions.create({
-      model: "gpt-5-mini",
-      messages: getMessages(),
-    });
-
-    const content = response.choices[0].message.content;
-    console.log(content);
-
-    await addMessage(content, "assistant");
+    for (const [i, r] of results.entries()) {
+      console.log(`\n${i + 1}. ${r.city_name} (${r.city_name_en})　${r.region}`);
+      console.log(`   分數：${r.score.toFixed(3)}`);
+      console.log(`   市長：${r.mayor_2024}　人口：${r.population_2024?.toLocaleString()}`);
+      console.log(`   景點：${r.famous_attractions}`);
+      console.log(`   美食：${r.local_cuisine}`);
+      console.log(`   簡介：${r.summary}`);
+    }
+    console.log();
   }
 } catch (err) {
   if (err.name === "ExitPromptError") {
